@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的钱包</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <script src="./contract.js"></script>
+</head>
+<body>
+    <div style="text-align: center;">
+        <div style="text-align: center;margin-top: 30px;">
+            <button onclick="connectWallet()">Connect Wallet</button>
+            <button onclick="runcontract()">Run Contract</button>
+        </div>
+        <div style="margin-top: 10px;" id="account">Account:</div>
+        <div style="margin-top: 10px;" id="contract">Contract:</div>
+    </div>
+    <script>
+        async function connectWallet(){
+            if(typeof window.ethereum === "undefined"){
+                alert("Please install wallet first!");
+                return;
+            }
+
+            let accounts= await window.ethereum.request({method:'eth_requestAccounts'});
+            if(accounts.length>0){
+                document.getElementById("account").innerText="Account: "+accounts[0];
+            }
+        }
+
+        async function runcontract(){
+            if(typeof window.ethereum === "undefined"){
+                alert("Please install wallet first!");
+                return;
+            }
+            
+            let provider = new ethers.providers.Web3Provider(window.ethereum);
+            let contract = new ethers.Contract(contractaddress,contractAbi,provider.getSigner());
+            let result = await contract.greet();
+            document.getElementById("contract").innerText=result;
+        }
+    </script>
+</body>
+</html>
